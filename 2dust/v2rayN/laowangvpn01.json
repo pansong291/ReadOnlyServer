@@ -52,6 +52,227 @@
       "settings": {
         "vnext": [
           {
+            "address": "wp7c9Uwo2Pas48.i2eu938kp74a14.xyz",
+            "port": 443,
+            "users": [
+              {
+                "alterId": 444,
+                "id": "5ad2f26b-3376-4045-bf29-a184794b7cf1",
+                "level": 8,
+                "security": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "security": "tls",
+        "tlssettings": {
+          "allowInsecure": false,
+          "serverName": "wp7c9Uwo2Pas48.i2eu938kp74a14.xyz"
+        },
+        "wssettings": {
+          "connectionReuse": true,
+          "headers": {
+            "Host": "wp7c9Uwo2Pas48.i2eu938kp74a14.xyz"
+          },
+          "path": "/dd58e9f339ad1f/"
+        }
+      },
+      "tag": "proxy"
+    },
+    {
+      "protocol": "freedom",
+      "settings": {},
+      "tag": "direct"
+    },
+    {
+      "protocol": "blackhole",
+      "settings": {
+        "response": {
+          "type": "http"
+        }
+      },
+      "tag": "block"
+    }
+  ],
+  "policy": {
+    "levels": {
+      "8": {
+        "connIdle": 300,
+        "downlinkOnly": 1,
+        "handshake": 4,
+        "uplinkOnly": 1
+      }
+    },
+    "system": {
+      "statsInboundUplink": true,
+      "statsInboundDownlink": true
+    }
+  },
+  "routing": {
+    "domainStrategy": "AsIs",
+    "rules": [
+      {
+        "domain": [
+          "domain:googleapis.cn"
+        ],
+        "outboundTag": "proxy",
+        "type": "field"
+      },
+      {
+        "domain": [
+          "translate.google.cn",
+          "services.googleapis.cn",
+          "googleapis.cn",
+          "google.cn"
+        ],
+        "outboundTag": "proxy",
+        "type": "field"
+      },
+      {
+        "domain": [
+          "clickdealer2.info",
+          "teleproxy.info",
+          "djijds.com",
+          "auth.api.sonyentertainmentnetwork.com",
+          "native-ps3.np.ac.playstation.net",
+          "account.sonyentertainmentnetwork.com",
+          "auth.np.ac.playstation.net",
+          "accounts.api.playstation.com",
+          "native.np.ac.playstation.net",
+          "appsflyer.tk",
+          "checkingstatus.ml",
+          "dsfcxas321.gq",
+          "flirt4meetuponslocalstonight.com",
+          "fastfindgirlsonslocalus.com",
+          "gennisheyotrading.com",
+          "mer.hookuponsusacheatinggirlnearyou.com",
+          "jr2mww0.rufoof.com",
+          "vgs.untd.com",
+          "eggowebaxikwgb.com",
+          "HayloDirect.com",
+          "satwbtcjnhnrd.com",
+          "ort.chatwithlocalgirls40.top",
+          "monetarybenefit.website",
+          "speedtest.net",
+          "speedtest.cn",
+          "ip.sb",
+          "skk.moe",
+          "whoer.net",
+          "whatismyipaddress.com",
+          "ez2o.com",
+          "whatismyip.com",
+          "geoipview.com",
+          "ifreesite.com",
+          "nkuht.edu",
+          "myip.com",
+          "j4.com",
+          "ip-api.com",
+          "ipapi.co",
+          "ipstack.com",
+          "iplocation.net",
+          "expressvpn.com",
+          "kinsta.com",
+          "nordvpn.com",
+          "whatismybrowser.com",
+          "ip2location.com",
+          "whatsmyip.org",
+          "ipip.net",
+          "ip.cn",
+          "chinaz.com",
+          "ip138.com",
+          "baidu.com",
+          "bdstatic.com",
+          "bcebos.com",
+          "koreanwar.org",
+          "u2yxyrlph.ru"
+        ],
+        "outboundTag": "direct",
+        "type": "field"
+      },
+      {
+        "ip": [
+          "geoip:private"
+        ],
+        "outboundTag": "direct",
+        "type": "field"
+      },
+      {
+        "ip": [
+          "geoip:cn"
+        ],
+        "outboundTag": "direct",
+        "type": "field"
+      },
+      {
+        "domain": [
+          "geosite:cn"
+        ],
+        "outboundTag": "direct",
+        "type": "field"
+      }
+    ]
+  },
+  "stats": {}
+}
+
+
+{
+  "dns": {
+    "hosts": {
+      "domain:googleapis.cn": "googleapis.com"
+    },
+    "servers": [
+      "1.1.1.1",
+      "1.0.0.1",
+      "8.8.8.8",
+      "8.8.4.4"
+    ]
+  },
+  "inbounds": [
+    {
+      "listen": "127.0.0.1",
+      "port": 10808,
+      "protocol": "socks",
+      "settings": {
+        "auth": "noauth",
+        "udp": true,
+        "userLevel": 8
+      },
+      "sniffing": {
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "enabled": true
+      },
+      "tag": "socks"
+    },
+    {
+      "listen": "127.0.0.1",
+      "port": 10809,
+      "protocol": "http",
+      "settings": {
+        "userLevel": 8
+      },
+      "tag": "http"
+    }
+  ],
+  "log": {
+    "loglevel": "warning"
+  },
+  "outbounds": [
+    {
+      "mux": {
+        "concurrency": -1,
+        "enabled": false
+      },
+      "protocol": "vmess",
+      "settings": {
+        "vnext": [
+          {
             "address": "dpc5Ms0la4.dh8cLso94Pyfk17.xyz",
             "port": 443,
             "users": [
