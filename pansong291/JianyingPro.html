@@ -12,21 +12,22 @@
 </head>
 <body>
 <p>Windows 目录：C:\Users\Administrator\AppData\Local\JianyingPro\User Data\Projects\com.lveditor.draft\</p>
+<p>Android 目录：/data/data/com.lemon.lv/files/newdrafts/</p>
 <label>设置换行符：
     <select onchange="onChange(this.value)">
         <option value="rn">\r\n （Windows）</option>
         <option value="n">\n （Linux）</option>
     </select>
-    <span id="rn-hint" style="color: red;display: none">  **  修改后需要重新生成才能生效</span>
+    <span id="rn-hint" style="color: red;display: none">  **  修改后需要重新生成</span>
 </label>
 <p><label for="input-text">输入 JSON</label></p>
 <div>
-    <textarea id="input-text" cols="60" rows="15">{"platform": {"os": ""},"materials":{"texts":[{"content":"默认文本","id":
-        "28824EDA-D841-4c81-B264-DC268957660B","type":"text"},{"content":"默认文本","id":"A4637647-EF07-418c-B2A4-6781EC9B6003",
-        "type":"text"}]},"tracks":[{"id":"A891C42E-A9F6-41fa-89E4-5DD250F2D7D1","segments":[{"id":"624A1A67-15F8-499b-BDF4-0C949FFB383A",
-        "material_id":"28824EDA-D841-4c81-B264-DC268957660B","target_timerange":{"duration":3000000,"start":0}}],"type":"text"},
-        {"id":"45336909-80D9-4320-93C2-1737989C45FC","segments":[{"id":"7729B6F5-8C3D-46ee-A0F4-3D3FC5B82823","material_id":
-        "A4637647-EF07-418c-B2A4-6781EC9B6003","target_timerange":{"duration":3000000,"start":2652233000}}],"type":"text"}]}</textarea>
+    <textarea id="input-text" cols="60" rows="15">{"platform": {"os": ""},"materials":{"texts":[{"content":"轨道一文本","id":
+"28824EDA-D841-4c81-B264-DC268957660B","type":"text"},{"content":"轨道二文本","id":"A4637647-EF07-418c-B2A4-6781EC9B6003",
+"type":"text"}]},"tracks":[{"id":"A891C42E-A9F6-41fa-89E4-5DD250F2D7D1","segments":[{"id":"624A1A67-15F8-499b-BDF4-0C949FFB383A",
+"material_id":"28824EDA-D841-4c81-B264-DC268957660B","target_timerange":{"duration":3000000,"start":0}}],"type":"text"},
+{"id":"45336909-80D9-4320-93C2-1737989C45FC","segments":[{"id":"7729B6F5-8C3D-46ee-A0F4-3D3FC5B82823","material_id":
+"A4637647-EF07-418c-B2A4-6781EC9B6003","target_timerange":{"duration":3000000,"start":2652233000}}],"type":"text"}]}</textarea>
     <button type="button" onclick="onBtnClick(this)">生成 srt 文件</button>
 </div>
 <p><label>输出 SRT</label></p>
@@ -58,27 +59,28 @@
     function onBtnClick(btn) {
         try {
             hintSpan.style.display = 'none';
-            // 剪映 json 对象
-            let jy = JSON.parse(inputText.value);
             // 如果上一次生成的 div 标签存在就移除掉
             let temp;
             while (outputDivArray.length) {
                 temp = outputDivArray.pop();
                 temp.parentNode.removeChild(temp);
             }
-            let srtFiles = convertJSON2SRT(jy);
+            // 剪映 json 对象
+            temp = JSON.parse(inputText.value);
+            let srtFiles = convertJSON2SRT(temp);
             let text;
             for (let k in srtFiles) {
                 text = srtFiles[k];
                 temp = document.createElement('div');
                 temp.innerHTML = '<textarea cols="60" rows="15">' + text + '</textarea>';
-                temp.appendChild(getDownloadLink('jyPro_' + k + '.srt', text));
+                temp.appendChild(getDownloadLink('jy_' + k + '.srt', text));
                 document.body.appendChild(temp);
                 outputDivArray.push(temp);
             }
+            alert('生成完毕');
         } catch (e) {
             console.log(e);
-            alert('JSON 解析异常');
+            alert('JSON 解析错误');
         }
     }
 
@@ -118,7 +120,6 @@
         let srt = {content: null, start: null, end: null};
         let srtText = '', index = 0;
         for (let i in segments) {
-            index++;
             segment = segments[i];
             srt.content = texts[segment.material_id];
             if (!srt.content) continue;
@@ -126,6 +127,7 @@
             srt.end = srt.start + segment.target_timerange.duration;
             srt.start = getSrtTimeText(srt.start, milli);
             srt.end = getSrtTimeText(srt.end, milli);
+            index++;
             srtText += formatSrt(index, srt);
         }
         return srtText;
@@ -175,7 +177,7 @@
         minute = formatDigit(minute, 2);
         second = formatDigit(second, 2);
         millisecond = formatDigit(millisecond, 3);
-        return `${hour}:${minute}:${second},${millisecond}`;
+        return hour + ':' + minute + ':' + second + ',' + millisecond;
     }
 
     /**
