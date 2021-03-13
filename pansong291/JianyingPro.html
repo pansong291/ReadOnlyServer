@@ -28,7 +28,8 @@
 "material_id":"28824EDA-D841-4c81-B264-DC268957660B","target_timerange":{"duration":3000000,"start":0}}],"type":"text"},
 {"id":"45336909-80D9-4320-93C2-1737989C45FC","segments":[{"id":"7729B6F5-8C3D-46ee-A0F4-3D3FC5B82823","material_id":
 "A4637647-EF07-418c-B2A4-6781EC9B6003","target_timerange":{"duration":3000000,"start":2652233000}}],"type":"text"}]}</textarea>
-    <button type="button" onclick="onBtnClick(this)">生成 srt 文件</button>
+    <button type="button" onclick="onGenerateClick()">生成 srt 文件</button>
+    <button type="button" onclick="onClearClick()">清空</button>
 </div>
 <p><label>输出 SRT</label></p>
 <script>
@@ -56,7 +57,11 @@
         }
     }
 
-    function onBtnClick(btn) {
+    function onClearClick() {
+        inputText.value = '';
+    }
+
+    function onGenerateClick() {
         try {
             hintSpan.style.display = 'none';
             // 如果上一次生成的 div 标签存在就移除掉
@@ -72,7 +77,7 @@
             for (let k in srtFiles) {
                 text = srtFiles[k];
                 temp = document.createElement('div');
-                temp.innerHTML = '<textarea cols="60" rows="15">' + text + '</textarea>';
+                temp.innerHTML = '<textarea cols="60" rows="15" readonly>' + text + '</textarea>';
                 temp.appendChild(getDownloadLink('jy_' + k + '.srt', text));
                 document.body.appendChild(temp);
                 outputDivArray.push(temp);
@@ -84,18 +89,18 @@
         }
     }
 
-    function convertJSON2SRT(JSON) {
+    function convertJSON2SRT(jy) {
         // 平台系统
-        let os = JSON.platform.os;
+        let os = jy.platform.os;
         // 提取文本材料
         // Map 结构 = {id1: text1, id2: text2, ...}
-        let texts = {}, temp = JSON.materials.texts;
+        let texts = {}, temp = jy.materials.texts;
         for (let i in temp) {
             texts[temp[i].id] = temp[i].content;
         }
 
         // 轨道列表
-        let tracks = JSON.tracks, track;
+        let tracks = jy.tracks, track;
         // SRT 文件 Map
         let srtFiles = {};
         for (let i in tracks) {
