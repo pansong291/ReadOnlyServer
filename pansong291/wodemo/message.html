@@ -3,17 +3,28 @@
 <body>
 <div id="paso-message-board-wrapper"></div>
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const { createElem, qs } = paso.function
-    const msgBoardWrapper = qs('#paso-message-board-wrapper')
-    const originForm = qs('#paso-comments > form')
-    if (originForm) {
-      originForm.querySelector('input[type=submit]').value = '留 言'
-      msgBoardWrapper.append(originForm)
-    } else {
-      msgBoardWrapper.append(createElem('a', { href: `//wodemo.net/login?return_to=${encodeURIComponent(window.location.href)}` }, ['登录后可留言']))
+  ;(function () {
+    document.head.insertAdjacentHTML('beforeend', `
+    <style>
+      #paso-comments > form {
+        display: none;
+      }
+    </style>`)
+    const commentInitHandler = (e) => {
+      if (e.data?.name !== 'on-comment-init') return
+      const { createElem, qs } = paso.function
+      const msgBoardWrapper = qs('#paso-message-board-wrapper')
+      const originForm = qs('#paso-comments > form')
+      if (originForm) {
+        originForm.querySelector('input[type=submit]').value = '留 言'
+        msgBoardWrapper.append(originForm)
+      } else {
+        msgBoardWrapper.append(createElem('a', { href: `//wodemo.net/login?return_to=${encodeURIComponent(window.location.href)}` }, ['登录后可留言']))
+      }
+      window.removeEventListener('message', commentInitHandler)
     }
-  })
+    window.addEventListener('message', commentInitHandler)
+  }())
 </script>
 </body>
 </html>

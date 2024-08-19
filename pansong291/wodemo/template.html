@@ -34,7 +34,6 @@
         'https://github.moeyy.xyz',
         'https://ghproxy.net',
         'https://gh-proxy.com',
-        'https://gh.sixyin.com',
         'https://gh-proxy.llyke.com',
         'https://gh.cache.cloudns.org',
         'https://gh.ddlc.top',
@@ -51,6 +50,7 @@
         'https://ghproxy.org',
         'https://ghproxy.top',
         'https://gh.ezctrl.cn',
+        'https://gh.sixyin.com',
         'https://gh.bink.cc',
         'https://gh.noki.icu'
       ]
@@ -76,6 +76,7 @@
       }
     }
     findMirror().then(() => {
+      window.postMessage({ name: 'on-mirror-end' })
       document.head.append(createElem('script', { src: `${window.paso.data.mirrorDomain}/pansong291/ReadOnlyServer/main/pansong291/wodemo/init-comment.js` }))
     })
   }())

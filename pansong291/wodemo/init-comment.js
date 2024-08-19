@@ -4,7 +4,11 @@
   const strs = {
     emojiWrapperPrefix: 'paso-emoji-wrapper-',
     emojiSwitcherPrefix: 'paso-emoji-switcher-',
+    emojiController: 'paso-emoji-controller',
+    emojiExhibitor: 'paso-emoji-exhibitor',
+    emojiWrapper: 'emoji-wrapper',
     githubPath: '/pansong291/Pictures/e56f47953bd9e4f1aff4110b1ccf5c1032ac48cd/emoji',
+    initName: 'on-comment-init'
   }
   const emojiMap = new Proxy({
     '1呵呵': '1',
@@ -111,27 +115,30 @@
   elements.comment_wrapper = qs('#paso-comments')
   elements.comment_form = qs('#paso-comments > form')
   // 未登录且不允许匿名时不存在表单
-  if (!elements.comment_form) return replaceEmoji(elements.comment_wrapper)
+  if (!elements.comment_form) {
+    replaceEmoji(elements.comment_wrapper)
+    return window.postMessage({ name: strs.initName })
+  }
 
   document.head.insertAdjacentHTML('beforeend', `
     <style>
-      #paso-emoji-controller {
+      #${strs.emojiController} {
         display: flex;
         flex-direction: row;
         justify-content: flex-start;
         align-items: stretch;
         gap: 8px;
       }
-      .emoji-wrapper {
+      .${strs.emojiWrapper} {
         padding-top: 8px;
       }
-      .emoji-wrapper img {
+      .${strs.emojiWrapper} img {
         cursor: pointer;
       }
-      .emoji-wrapper img:hover:not(:active) {
+      .${strs.emojiWrapper} img:hover:not(:active) {
         outline: 1px solid #0000ee;
       }
-      .emoji-wrapper img:active {
+      .${strs.emojiWrapper} img:active {
         outline: 1px solid #ff0000;
       }
       .wo-reply-textarea {
@@ -140,8 +147,8 @@
       }
     </style>`)
   // 初始化 controller, exhibitor
-  elements.emoji_controller = createElem('div', { id: 'paso-emoji-controller' })
-  elements.emoji_exhibitor = createElem('div', { id: 'paso-emoji-exhibitor' })
+  elements.emoji_controller = createElem('div', { id: strs.emojiController })
+  elements.emoji_exhibitor = createElem('div', { id: strs.emojiExhibitor })
   elements.textarea = elements.comment_form.querySelector('textarea')
   // 移除表单中不必要的元素
   const formChildren = Array.from(elements.comment_form.childNodes)
@@ -163,7 +170,7 @@
     if (!elements[wrapperId]) {
       show = true
       // 懒加载 emoji-wrapper
-      elements[wrapperId] = createElem('div', { id: wrapperId, class: 'emoji-wrapper' })
+      elements[wrapperId] = createElem('div', { id: wrapperId, class: strs.emojiWrapper })
       for (const alt in emojiMap) {
         if (!alt.startsWith(num)) continue
         const emojiElem = createElem('img', { alt, src: emojiMap[alt] })
@@ -210,4 +217,5 @@
 
   replaceEmoji(elements.comment_wrapper)
   elements.textarea.before(elements.emoji_controller, elements.emoji_exhibitor)
+  return window.postMessage({ name: strs.initName })
 }())
