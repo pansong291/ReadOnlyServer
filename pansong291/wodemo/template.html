@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<body>
+<script>
+  if (!window.paso) window.paso = {}
+  if (!paso.function) paso.function = {}
+  if (!paso.data) paso.data = {}
+  paso.function.qs = document.querySelector.bind(document)
+  paso.function.qsa = document.querySelectorAll.bind(document)
+  paso.function.createElem = (tag, attrs, children) => {
+    const el = document.createElement(tag)
+    if (attrs) Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v))
+    if (Array.isArray(children)) {
+      el.append.apply(el, children)
+    } else if (typeof children === 'string') {
+      el.innerHTML = children
+    }
+    return el
+  }
+</script>
+<h1 class="wo-entry-title">{wo.entry.title}</h1>
+<div id="paso-entry-main">{wo.entry.main}</div>
+<div class="wo-entry-time" data-timestamp="{wo.entry.creation.timestamp}">创建于 {wo.entry.creation.datestr}</div>
+<div id="paso-category">分类: <a href="{wo.category.url}">{wo.category.name}</a></div>
+<div id="paso-prev-next">{wo.entry.prevnext}</div>
+<div id="paso-comments">{wo.entry.comments}</div>
+<div id="paso-back-home">{wo.site.backtohome}</div>
+<script>
+  ;(function () {
+    const { createElem } = window.paso.function
+    const domains = {
+      githubRaw: 'https://raw.githubusercontent.com',
+      mirrors: [
+        'https://github.moeyy.xyz',
+        'https://ghproxy.net',
+        'https://gh-proxy.com',
+        'https://gh.sixyin.com',
+        'https://gh-proxy.llyke.com',
+        'https://gh.cache.cloudns.org',
+        'https://gh.ddlc.top',
+        'https://slink.ltd',
+        'https://gh.con.sh',
+        'https://hub.gitmirror.com',
+        'https://sciproxy.com',
+        'https://cf.ghproxy.cc',
+        'https://ghproxy.cn',
+        'https://ghproxy.cc',
+        'https://mirror.ghproxy.com',
+        'https://gh.jiasu.in',
+        'https://ghps.cc',
+        'https://ghproxy.org',
+        'https://ghproxy.top',
+        'https://gh.ezctrl.cn',
+        'https://gh.bink.cc',
+        'https://gh.noki.icu'
+      ]
+    }
+    const testMirror = (mirror) => {
+      return new Promise((resolve, reject) => {
+        const imgElm = createElem('img')
+        imgElm.onload = resolve
+        imgElm.onerror = reject
+        imgElm.src = `${mirror}/${domains.githubRaw}/pansong291/Pictures/e56f47953bd9e4f1aff4110b1ccf5c1032ac48cd/test.png`
+      })
+    }
+    const findMirror = async () => {
+      window.paso.data.mirrorDomain = domains.githubRaw
+      for (const mirror of domains.mirrors) {
+        try {
+          await testMirror(mirror)
+          window.paso.data.mirrorDomain = `${mirror}/${domains.githubRaw}`
+          return
+        } catch (e) {
+          console.log('不可用:', mirror)
+        }
+      }
+    }
+    findMirror().then(() => {
+      document.head.append(createElem('script', { src: `${window.paso.data.mirrorDomain}/pansong291/ReadOnlyServer/main/pansong291/wodemo/init-comment.js` }))
+    })
+  }())
+</script>
+</body>
+</html>

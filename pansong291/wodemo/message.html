@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<body>
+<div id="paso-message-board-wrapper"></div>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const { createElem, qs } = paso.function
+    const msgBoardWrapper = qs('#paso-message-board-wrapper')
+    const originForm = qs('#paso-comments > form')
+    if (originForm) {
+      originForm.querySelector('input[type=submit]').value = '留 言'
+      msgBoardWrapper.append(originForm)
+    } else {
+      msgBoardWrapper.append(createElem('a', { href: `//wodemo.net/login?return_to=${encodeURIComponent(window.location.href)}` }, ['登录后可留言']))
+    }
+  })
+</script>
+</body>
+</html>
