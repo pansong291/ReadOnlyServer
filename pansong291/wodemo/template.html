@@ -39,13 +39,13 @@
         'https://gh.ddlc.top',
         'https://slink.ltd',
         'https://gh.con.sh',
-        'https://hub.gitmirror.com',
         'https://sciproxy.com',
         'https://cf.ghproxy.cc',
         'https://ghproxy.cn',
         'https://ghproxy.cc',
-        'https://mirror.ghproxy.com',
         'https://gh.jiasu.in',
+        'https://mirror.ghproxy.com',
+        // 'https://hub.gitmirror.com',
         'https://ghps.cc',
         'https://ghproxy.org',
         'https://ghproxy.top',
@@ -55,27 +55,29 @@
         'https://gh.noki.icu'
       ]
     }
-    const testMirror = (mirror) => {
-      return new Promise((resolve, reject) => {
-        const imgElm = createElem('img')
-        imgElm.onload = resolve
-        imgElm.onerror = reject
-        imgElm.src = `${mirror}/${domains.githubRaw}/pansong291/Pictures/e56f47953bd9e4f1aff4110b1ccf5c1032ac48cd/test.png`
+    const findMirror = async (mirrors, fallback) => {
+      const xhrs = mirrors.map((mirror) => {
+        const xhr = new XMLHttpRequest()
+        xhr._mirror = mirror
+        xhr.open('GET', `${mirror}/https://raw.githubusercontent.com/pansong291/Pictures/master/test.png`)
+        return xhr
       })
-    }
-    const findMirror = async () => {
-      window.paso.data.mirrorDomain = domains.githubRaw
-      for (const mirror of domains.mirrors) {
-        try {
-          await testMirror(mirror)
-          window.paso.data.mirrorDomain = `${mirror}/${domains.githubRaw}`
-          return
-        } catch (e) {
-          console.log('不可用:', mirror)
-        }
+      const promises = xhrs.map((xhr) => new Promise((resolve, reject) => {
+        xhr.addEventListener('abort', reject)
+        xhr.addEventListener('error', reject)
+        xhr.addEventListener('timeout', reject)
+        xhr.addEventListener('load', (e) => resolve(e.target?._mirror))
+        xhr.send()
+      }))
+      try {
+        window.paso.data.mirrorDomain = `${await Promise.any(promises)}/${fallback}`
+        xhrs.forEach((xhr) => xhr.abort())
+      } catch (e) {
+        window.paso.data.mirrorDomain = fallback
+        console.error('镜像不可用', e)
       }
     }
-    findMirror().then(() => {
+    findMirror(domains.mirrors, domains.githubRaw).then(() => {
       window.postMessage({ name: 'on-mirror-end' })
       document.head.append(createElem('script', { src: `${window.paso.data.mirrorDomain}/pansong291/ReadOnlyServer/main/pansong291/wodemo/init-comment.js` }))
     })
