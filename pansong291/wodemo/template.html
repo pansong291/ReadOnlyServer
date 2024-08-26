@@ -59,7 +59,7 @@
       const xhrs = mirrors.map((mirror) => {
         const xhr = new XMLHttpRequest()
         xhr._mirror = mirror
-        xhr.open('GET', `${mirror}/https://raw.githubusercontent.com/pansong291/Pictures/master/test.png`)
+        xhr.open('GET', `${mirror}/https://raw.githubusercontent.com/pansong291/Pictures/master/test.png?t=${Date.now()}`)
         return xhr
       })
       const promises = xhrs.map((xhr) => new Promise((resolve, reject) => {
